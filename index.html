@@ -1,74 +1,106 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <title>Тапалка</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Talaria — Колесо фортуны</title>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
       font-family: Arial, sans-serif;
-      background: #f0f8ff;
-      height: 100vh;
-      overflow: hidden;
-      position: relative;
-    }
-
-    #score {
+      text-align: center;
+      background-color: #fff9f9;
       padding: 20px;
-      font-size: 24px;
-      font-weight: bold;
-      color: #333;
     }
 
-    #target {
-      position: absolute;
-      width: 80px;
-      height: 80px;
-      background-color: #ff4081;
-      color: white;
+    h1 {
+      color: #c2185b;
+    }
+
+    .wheel-container {
+      margin: 30px auto;
+      width: 300px;
+      height: 300px;
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      border: 10px solid #e91e63;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .wheel {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      transition: transform 4s ease-out;
+    }
+
+    .pointer {
+      width: 0;
+      height: 0;
+      border-left: 20px solid transparent;
+      border-right: 20px solid transparent;
+      border-bottom: 30px solid #c2185b;
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 18px;
+      background-color: #c2185b;
+      color: white;
+      border: none;
+      border-radius: 8px;
       cursor: pointer;
-      font-weight: bold;
+    }
+
+    .result {
+      margin-top: 20px;
       font-size: 20px;
-      user-select: none;
-      transition: top 0.2s, left 0.2s;
+      color: #4caf50;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <div id="score">Очки: 0</div>
-  <div id="target">🎯</div>
+  <h1>🎁 Колесо фортуны</h1>
+  <p>Попробуйте удачу и получите подарок от Talaria!</p>
+
+  <div class="wheel-container">
+    <div class="pointer"></div>
+    <img src="wheel.png" class="wheel" id="wheel" alt="Колесо">
+  </div>
+
+  <button onclick="spinWheel()">Крутить колесо</button>
+  <div class="result" id="result"></div>
 
   <script>
-    const target = document.getElementById('target')
-    const scoreDisplay = document.getElementById('score')
-    let score = 0
+    const wheel = document.getElementById('wheel');
+    const result = document.getElementById('result');
 
-    function moveTarget() {
-      const maxX = window.innerWidth - target.offsetWidth
-      const maxY = window.innerHeight - target.offsetHeight
-      const randX = Math.random() * maxX
-      const randY = Math.random() * maxY
-      target.style.left = randX + 'px'
-      target.style.top = randY + 'px'
+    const prizes = [
+      "Скидка 10%",
+      "Скидка 20%",
+      "Пара носков",
+      "Сумка в подарок",
+      "Купон на обувь",
+      "Скидка 5%",
+      "Бесплатная пара обуви",
+      "Спасибо за участие!"
+    ];
+
+    function spinWheel() {
+      const randomDeg = Math.floor(Math.random() * 360 + 3600);
+      const prizeIndex = Math.floor(((randomDeg % 360) / 45)) % prizes.length;
+      
+      wheel.style.transform = `rotate(${randomDeg}deg)`;
+
+      setTimeout(() => {
+        result.textContent = `🎉 Вы выиграли: ${prizes[prizeIndex]}!`;
+      }, 4000);
     }
-
-    target.addEventListener('click', () => {
-      score++
-      scoreDisplay.innerText = 'Очки: ' + score
-      moveTarget()
-    })
-
-    // Первоначальное размещение
-    moveTarget()
   </script>
 </body>
 </html>

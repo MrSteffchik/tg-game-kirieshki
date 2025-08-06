@@ -70,7 +70,7 @@
 
   <div class="wheel-container">
     <div class="pointer"></div>
-    <img src="wheel.png" class="wheel" id="wheel" alt="Колесо фортуны">
+    <img src="wheel2.png" class="wheel" id="wheel" alt="Колесо фортуны">
   </div>
 
   <button onclick="spinWheel()">Крутить колесо</button>
@@ -91,11 +91,19 @@
       "Спасибо за участие"
     ];
 
-    function spinWheel() {
-      const randomDeg = Math.floor(Math.random() * 360 + 3600);
-      const prizeIndex = Math.floor(((randomDeg % 360) / 45)) % prizes.length;
+    let currentDeg = 0;
+    let isSpinning = false;
 
-      wheel.style.transform = `rotate(${randomDeg}deg)`;
+    function spinWheel() {
+      if (isSpinning) return;
+      isSpinning = true;
+
+      const spinDeg = Math.floor(Math.random() * 360 + 3600);
+      currentDeg += spinDeg;
+
+      wheel.style.transform = `rotate(${currentDeg}deg)`;
+
+      const prizeIndex = Math.floor(((currentDeg % 360) / 45)) % prizes.length;
 
       setTimeout(() => {
         const prize = prizes[prizeIndex];
@@ -106,6 +114,7 @@
         const name = user?.first_name || "Гость";
 
         sendToTelegramChannel(name, prize);
+        isSpinning = false;
       }, 4000);
     }
 
@@ -131,7 +140,6 @@
       .catch(error => console.error("Ошибка отправки:", error));
     }
 
-    // Telegram WebApp расширение на весь экран
     if (window.Telegram?.WebApp) {
       window.Telegram.WebApp.expand();
     }

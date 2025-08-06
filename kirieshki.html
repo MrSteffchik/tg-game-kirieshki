@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Тапалка</title>
+<style>
+
+</style>
+</head>
+<body>
+  <div id="score">Очки: 0</div>
+  <div id="target">оооооооо</div>
+  <script>let score = 0
+    document.getElementById('target').addEventListener('click', () => {
+      score++
+      document.getElementById('score').innerText = 'Очки: ' + score
+    })</script>
+</body>
+</html>

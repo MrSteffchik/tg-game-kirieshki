@@ -70,7 +70,7 @@
 
   <div class="wheel-container">
     <div class="pointer"></div>
-    <img src="wheel.png" class="wheel" id="wheel" alt="Колесо">
+    <img src="wheel.png" class="wheel" id="wheel" alt="Колесо фортуны">
   </div>
 
   <button onclick="spinWheel()">Крутить колесо</button>
@@ -88,18 +88,52 @@
       "Купон на обувь",
       "Скидка 5%",
       "Бесплатная пара обуви",
-      "Спасибо за участие!"
+      "Спасибо за участие"
     ];
 
     function spinWheel() {
       const randomDeg = Math.floor(Math.random() * 360 + 3600);
       const prizeIndex = Math.floor(((randomDeg % 360) / 45)) % prizes.length;
-      
+
       wheel.style.transform = `rotate(${randomDeg}deg)`;
 
       setTimeout(() => {
-        result.textContent = `🎉 Вы выиграли: ${prizes[prizeIndex]}!`;
+        const prize = prizes[prizeIndex];
+        result.textContent = `🎉 Вы выиграли: ${prize}!`;
+
+        const tg = window.Telegram?.WebApp;
+        const user = tg?.initDataUnsafe?.user;
+        const name = user?.first_name || "Гость";
+
+        sendToTelegramChannel(name, prize);
       }, 4000);
+    }
+
+    function sendToTelegramChannel(username, prize) {
+      const chatId = "-1002793144035";
+      const token = "7625098640:AAEGHym8OF0KSZWO64oWUW3C9s5WdQKSkJ8";
+
+      const message = `🎯 *Колесо фортуны*\n👤 ${username} выиграл(а): *${prize}*`;
+
+      fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: message,
+          parse_mode: "Markdown"
+        })
+      })
+      .then(response => response.json())
+      .then(data => console.log("Отправлено в канал:", data))
+      .catch(error => console.error("Ошибка отправки:", error));
+    }
+
+    // Telegram WebApp расширение на весь экран
+    if (window.Telegram?.WebApp) {
+      window.Telegram.WebApp.expand();
     }
   </script>
 </body>
